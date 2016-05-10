@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
 
-  s.name         = "QRCode"
+  s.name         = "HTQRCode"
   s.version      = "1.0.0"
   s.summary      = "二维码生成和扫描"
   s.description  = <<-DESC
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.author       = { "TeaseTian" => "330972860@qq.com" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/TeaseTian/QRCode.git", :tag => s.version }
-  s.source_files = "QRCode/*"
+  s.source_files = "QRCode/*.{h,m}"
   s.resources    = "QRCode/*.png"
   # s.frameworks   = "SomeFramework", "AnotherFramework"
   s.requires_arc = true
