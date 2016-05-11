@@ -9,7 +9,6 @@
 #import "QRCodeScanViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UIView+SDExtension.h"
-//#import "ViewController2.h"
 #import "ZXingObjC.h"
 #define iOS8 [[UIDevice currentDevice].systemVersion floatValue] >= 8.0
 static const CGFloat kBorderW = 100;
@@ -62,7 +61,7 @@ static const CGFloat kMargin = 30;
     
     //1.补充遮罩
     
-    UIView*mask=[[UIView alloc]initWithFrame:CGRectMake(0, _maskView.sd_y+_maskView.sd_height, self.view.sd_width, kBorderW)];
+    UIView*mask=[[UIView alloc]initWithFrame:CGRectMake(0, _maskView.sd_y+_maskView.sd_height, self.view.sd_width, kBorderW+100)];
     mask.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.7];
     [self.view addSubview:mask];
     
@@ -78,19 +77,21 @@ static const CGFloat kMargin = 30;
     [self.view addSubview:tipLabel];
     
 }
+
+/**
+ *  添加导航栏
+ */
 -(void)setupNavView{
     
     //1.返回
-    
     UIButton *backBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     backBtn.frame = CGRectMake(20, 30, 25, 25);
     [backBtn setBackgroundImage:[UIImage imageNamed:@"qrcode_scan_titlebar_back_nor"] forState:UIControlStateNormal];
     backBtn.contentMode=UIViewContentModeScaleAspectFit;
-    [backBtn addTarget:self action:@selector(disMiss) forControlEvents:UIControlEventTouchUpInside];
+    [backBtn addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:backBtn];
     
     //2.相册
-    
     UIButton * albumBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     albumBtn.frame = CGRectMake(0, 0, 35, 49);
     albumBtn.center=CGPointMake(self.view.sd_width/2, 20+49/2.0);
@@ -100,7 +101,6 @@ static const CGFloat kMargin = 30;
     [self.view addSubview:albumBtn];
     
     //3.闪光灯
-    
     UIButton * flashBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     flashBtn.frame = CGRectMake(self.view.sd_width-55,20, 35, 49);
     [flashBtn setBackgroundImage:[UIImage imageNamed:@"qrcode_scan_btn_flash_down"] forState:UIControlStateNormal];
@@ -143,7 +143,7 @@ static const CGFloat kMargin = 30;
     myCodeBtn.contentMode=UIViewContentModeScaleAspectFit;
     
     [myCodeBtn addTarget:self action:@selector(myCode) forControlEvents:UIControlEventTouchUpInside];
-    [bottomBar addSubview:myCodeBtn];
+//    [bottomBar addSubview:myCodeBtn];
     
     
 }
@@ -212,8 +212,9 @@ static const CGFloat kMargin = 30;
         [_session stopRunning];
         AVMetadataMachineReadableCodeObject * metadataObject = [metadataObjects objectAtIndex : 0 ];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"扫描结果" message:metadataObject.stringValue delegate:self cancelButtonTitle:@"退出" otherButtonTitles:@"再次扫描", nil];
-        [alert show];
+        _resultBlock(metadataObject.stringValue);
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"扫描结果" message:metadataObject.stringValue delegate:self cancelButtonTitle:@"退出" otherButtonTitles:@"再次扫描", nil];
+//        [alert show];
     }
 }
 #pragma mark-> 我的相册
@@ -273,8 +274,10 @@ static const CGFloat kMargin = 30;
             /**结果对象 */
             CIQRCodeFeature *feature = [features objectAtIndex:0];
             NSString *scannedResult = feature.messageString;
-            UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"扫描结果" message:scannedResult delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alertView show];
+            
+            _resultBlock(scannedResult);
+//            UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"扫描结果" message:scannedResult delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            [alertView show];
             
         }
         else{
@@ -415,7 +418,7 @@ static const CGFloat kMargin = 30;
     
 }
 #pragma mark-> 返回
-- (void)disMiss
+- (void)back
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -425,7 +428,7 @@ static const CGFloat kMargin = 30;
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 0) {
-        [self disMiss];
+        [self back];
     } else if (buttonIndex == 1) {
         [_session startRunning];
     }
@@ -436,14 +439,5 @@ static const CGFloat kMargin = 30;
     // Dispose of any resources that can be recreated.
 }
 
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 @end

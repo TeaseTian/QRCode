@@ -11,6 +11,8 @@
 
 
 #import "QRCodeGenerate.h"
-#import "QRCodeScanViewController.h"
+//#import "QRCodeScanViewController.h"
+#import "ScanViewController.h"
+
 
 #endif /* QRCode_h */
